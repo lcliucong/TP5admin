@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <title>尊云科技后台管理</title>
+
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <css href="/static/css/admin/bootstrap.min14ed.css" />
+    <css href="/static/css/admin/font-awesome.min93e3.css" />
+    <css href="/static/css/admin/animate.min.css" />
+    <css href="/static/css/admin/plugins/summernote/new_sumnote.css"/>
+    <css href="/static/css/admin/plugins/summernote/summernote-bs3.css"/>
+    <css href="/static/css/admin/plugins/chosen/chosen.css"/>
+    <css href="/static/css/admin/plugins/datapicker/datepicker3.css"/>
+    <css href="/static/css/admin/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css"/>
+    <css href="/static/css/admin/style.min862f.css"/>
+    <link href="/static/css/admin/admincommon.css?v=20181116" rel='stylesheet' type='text/css' />
+</head>
+<style type="text/css">
+    .chosen-container-multi{margin-left:16px;}
+</style>
+<body class="gray-bg">
+    <div class="wrapper wrapper-content">
+        <form id="article_form" class="form-horizontal" onsubmit="return false;">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input type="hidden" id="hide_io_id" value="{$data.io_id}">
+                        <label class="col-sm-1 control-label">标题1</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="io_title1" value="{$data['io_title1'] | default=''}" class="form-control">
+                        </div>
+                        <label class="col-sm-2 control-label">发布时间：</span></label>
+                        <div class="input-group date col-sm-3">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="text" class="form-control" value="{$data['io_time']|default= date('Y-m-d')}" id="io_time" name="io_time">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">标题2</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="io_title2" value="{$data['io_title2'] | default=''}" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">标题3</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="io_title3" value="{$data['io_title3'] | default=''}" class="form-control">
+                        </div>
+                    </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">图片：</label>
+                            <div class="col-sm-2">
+                                <input type="file" id="article_poster" name="file"  value="" class="form-control input-file" onchange="getImgData(this);">
+                                <input type="hidden" id="hide_io_img" name="io_img"  value="{$data['io_img'] | default=''}" class="form-control input-file">
+
+                            </div>
+                        </div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">预览图片</label>
+                        <div class="" id="temp_picture_wrap" style="position:relative;">
+                            <if condition="$data['io_img']">
+                                <img src="{$data['io_img']}" id="temp_picture" width="240" height="250" style="margin-top:15px;" />
+
+                                <a class='del_temp_picture' style='position:absolute;bottom:0px;margin-left:10px;'>删除</a>
+                            </if>
+                        </div>
+                    </div>
+
+                    <div class="hr-line-dashed" style="border:0.5px dashed #bfbaba;"></div>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="ibox float-e-margins">
+                        <div id="summernote_box" class="ibox-content no-padding">
+                            <div class ="summernote" style="padding-top: 30px;">
+                                {$data['io_content'] | default = ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2 col-sm-offset-5">
+                    <input type="hidden" id="io_id" name="io_id" value="{$data['io_id'] | default = ''}" />
+                    <input type="hidden" id="type"  name="type"  value="{$type}" />
+                    <button class="btn btn-primary" type="submit" onclick="publishArticleSubmit();">保存内容</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <js href="/static/js/admin/jquery.min.js"/>
+    <js href="/static/js/admin/bootstrap.min.js"/>
+    <js href="/static/js/admin/content.min.js"/>
+    <js href="/static/js/admin/plugins/chosen/chosen.jquery.js"/>
+    <js href="/static/js/admin/plugins/summernote/new_sumnote.js"/>
+    <js href="/static/js/admin/plugins/summernote/summernote-zh-CN.js"/>
+    <js href="/static/js/admin/plugins/layui/layer/layer.js"/>
+    <js href="/static/js/admin/plugins/datapicker/bootstrap-datepicker.js"/>
+    <script>
+        $(document).ready(function(){
+            // $('.del_temp_picture').on('click',function (){
+            //     let img = $('#temp_picture')[0].src
+            //     let ioid = $("#hide_io_id").val()
+            //     layer.confirm("你确定要删除这张图片吗？", {
+            //
+            //         btn: ['确定','取消'] //按钮
+            //
+            //     }, function(){
+            //
+            //         $.ajax({
+            //             url : "{:url('admin/OurService/imgdel')}",//后台文件上传接口
+            //             type : 'post',
+            //             data : {
+            //                 io_img: img,
+            //                 io_id : ioid,
+            //                 folder: "IndexOurService"
+            //             },
+            //             // processData : false,
+            //             // contentType : false,
+            //             success : function(data) {
+            //                 if(data.code==200){
+            //
+            //
+            //
+            //                 }else{
+            //
+            //                     layer.msg(data.msg, {time:800, icon:2});
+            //                 }
+            //             },
+            //         })
+            //
+            //     });
+            //
+            //
+            // })
+            $("#temp_picture_wrap").on("click",'.del_temp_picture',function(){
+                $("#io_img").val('');
+                $("#hide_io_img").val('');
+                $("#temp_picture_wrap").empty();
+            });
+
+            $('.summernote').summernote({
+                lang:"zh-CN",
+                height:'300px',
+                callbacks: {
+                    onImageUpload: function(files) {
+                        var formData = new FormData();
+                        formData.append('file',files[0]);
+                        $.ajax({
+                            url : "{:url('admin/Upload/checkUploadFileInfo')}?isupload=2&folder=IndexOurService",//后台文件上传接口
+                            type : 'post',
+                            data : formData,
+                            processData : false,
+                            contentType : false,
+                            success : function(data) {
+                                if(data.code==200){
+
+                                    $('.summernote').summernote('insertImage',data.data,'img');
+
+                                }else{
+
+                                    layer.msg(data.msg, {time:800, icon:2}); 
+                                }
+                            },
+                            dataType:'json'
+                        });
+                    }
+                }
+            });
+            
+            $("#io_time").datepicker();
+
+            var chosen = $(".chosen-select").chosen({
+                max_selected_options:10,
+                width: "50%"
+            });
+            chosen.bind("chosen:maxselected", function () { 
+                layer.msg('最多选10项', {time:800, icon:2});
+            });
+        });
+
+        function getImgData(obj){
+
+            var file =  obj.files[0];
+            var formData = new FormData();
+
+            var createObjectURL = function(blob){
+
+                return window[window.webkitURL ? 'webkitURL' : 'URL']['createObjectURL'](blob);
+            };
+
+            formData.append('file',file);
+
+            $.ajax({
+                url: "{:url('admin/Upload/checkUploadFileInfo')}?isupload=1",
+                type: 'post',
+                processData: false,  // 异步传输 formData 时要加上  processData: false  contentType: false
+                contentType: false,  // 否则会报 Illegal invocation 非法调用错误
+                data: formData,
+                success: function (data) {
+
+                    if(data.code===200) {
+                        layer.msg(data.message, {time:1000, icon:6});
+                        var filedata  = createObjectURL(file);
+                        var imgObject = new Image();
+                        imgObject.src = filedata;
+                        imgObject.id  = 'temp_picture';
+                        imgObject.width   = '240';
+                        imgObject.height  = '250';
+                        imgObject.style.marginTop  = '15px';
+
+                        $('#temp_picture_wrap').html('').append(imgObject);
+                        $('#temp_picture_wrap').append("<a class='del_temp_picture' style='position:absolute;bottom:0px;margin-left:10px;'>删除</a>");
+
+                    }else{
+
+                        $("#article_poster").val('');
+                        $("#temp_picture_wrap").empty();
+                        layer.msg(data.msg, {time:800, icon:5});
+                    }
+
+                },
+                dataType:'json'
+            });
+
+        }
+        
+
+        function publishArticleSubmit(){
+
+
+
+            if($.trim($(".summernote").summernote('code')) ==''){
+
+                layer.msg('请填写内容', {time:1000, icon:2});
+
+                return false;
+            }
+            
+            var formData = new FormData(document.getElementById('article_form'));
+            formData.append('io_content',$(".summernote").summernote('code'));
+            
+            var url = '';
+            if($("#type").val()=='addData') {
+
+                url = "{:url('admin/OurService/ioadd')}";
+
+            }else if($("#type").val()=='editData'){
+
+                url = "{:url('admin/OurService/ioedit')}";
+            }
+            $.ajax({
+                url: url,
+                type: 'post',
+                processData: false,  // 异步传输 formData 时要加上  processData: false  contentType: false 
+                contentType: false,  // 否则会报 Illegal invocation 非法调用错误
+                data: formData,
+                success: function (res) {
+                    if(res.code===200) {
+                        
+                        layer.msg(res.message, {time:1000, icon:6}, function(){
+                            parent.location.reload()
+                            var index=parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                        });
+
+                    }else{
+                        
+                        layer.msg(res.message, {time:1000, icon:5}, function(){
+                            var index=parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                        });
+                    }
+                },
+                dataType:'json'
+            });
+        }
+    </script>
+</html>

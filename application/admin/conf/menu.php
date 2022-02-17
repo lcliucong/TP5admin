@@ -175,7 +175,18 @@ $menu = array(
                     'name'=>'我们的服务',
                     'action'=>'admin/OurService/serlist',
                     "auth"=>array(
-    
+                        array('name'=>'添加','action'=>"admin/OurService/sersadd"),
+                        array('name'=>'删除','action'=>"admin/OurService/serdel"),
+                        array('name'=>'修改','action'=>"admin/OurService/seredit"),
+                    )
+                ),
+                array(
+                    'name'=>'（主页）我们的服务',
+                    'action'=>'admin/OurService/indexOurService',
+                    "auth"=>array(
+                        array('name'=>'添加','action'=>"admin/OurService/sersadd"),
+                        array('name'=>'删除','action'=>"admin/NewsDt/serdel"),
+                        array('name'=>'修改','action'=>"admin/NewsDt/seredit"),
                     )
                 )
             )

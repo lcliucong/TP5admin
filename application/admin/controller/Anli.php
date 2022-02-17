@@ -5,7 +5,7 @@ use think\Controller;
 class anli extends Controller{
     public function select(){
 
-        $data=db('anli')->select();
+        $data=db('anli')->paginate(8);
 
         return view('',['data'=>$data]);
 
@@ -20,7 +20,13 @@ class anli extends Controller{
         elseif(request()->isPost()){
 
             $edit=input('post.');
-            
+            $pic=request()->file('file');
+
+            if(!empty($pic)){
+                $uploadInfo = $pic->move(ROOT_PATH . 'public' . DS . 'uploads'. DS . 'anli');
+                $edit['img']='/uploads/anli/'.$uploadInfo->getSaveName();
+            }
+
             $res=db('anli')->where('id',$id)->update($edit);
             if($res){
                 $data=db('anli')->select();

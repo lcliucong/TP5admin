@@ -113,6 +113,7 @@
                             <th>内容</th>
                             <th>图片</th>
                             <th>状态</th>
+                            <th>分类</th>
                             <th>时间</th>
                             <th>操作</th>
                         </tr>
@@ -136,6 +137,7 @@
                                     </label>
 
                                 </td>
+                                <td>{$vo.news_classification}</td>
                                 <td class="center">{$vo.news_time}</td>
 
                                 <td class="center" align="center">
@@ -156,7 +158,7 @@
                         </volist>
                         </tbody>
                     </table>
-                    <center>{$page}</center>
+                    <center>{render()->$page}</center>
                 </div>
             </div>
         </div>
@@ -169,6 +171,7 @@
 <script type="text/javascript" src="/static/js/admin/admincommon.js?v=20180820"></script>
 <script src="https://unpkg.com/flyio/dist/fly.min.js"></script>
 <script>
+ 
     var fly = new Fly;
     function sta(obj){
         var news_id = obj.value; // 当行ID

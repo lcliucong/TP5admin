@@ -156,7 +156,7 @@
             data: formData,
             success: function (data) {
 
-                if(data.code==1) {
+                if(data.code==200) {
                     var filedata  = createObjectURL(file);
                     var imgObject = new Image();
                     imgObject.src = filedata;
@@ -226,7 +226,7 @@
             processData: false,  // 异步传输 formData 时要加上  processData: false  contentType: false
             contentType: false,  // 否则会报 Illegal invocation 非法调用错误
             data: formData,
-            success: function (res) { 
+            success: function (res) {
 
 
                     if(res.code===200) {

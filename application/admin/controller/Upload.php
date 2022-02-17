@@ -8,6 +8,7 @@ class Upload  extends AdminBase
     protected $saveFolder = ''; // 图片保存目录
 
     public function checkUploadFileInfo() {
+
         $isupload = input('param.isupload'); // 1：不上传， 2：上传
         if(input('param.folder','')) {
             $this->saveFolder =  input('param.folder');
@@ -20,10 +21,11 @@ class Upload  extends AdminBase
         if($info) {
             $name = date("Ymd") . rand(1000, 9999);
             if($isupload==1){
-                return json(['code'=>200,'message'=>'图片符合规定','data'=>'']);
+                return json(['code'=>200,'message'=>'图片符合规定','data'=>$info]);
             }elseif($isupload==2){
                 
                 $uploadInfo = $file->move(ROOT_PATH . 'public' . DS . 'uploads'. DS . $this->saveFolder.  DS  .date("Ymd")."/",$name);
+//                dump($uploadInfo);exit;
                 if($uploadInfo) {
                     return json(['code'=>200,'message'=>'图片符合规定','data'=> DS .'uploads'. DS . $this->saveFolder. DS .date("Ymd"). DS .$uploadInfo->getSaveName()]);
                 }else{

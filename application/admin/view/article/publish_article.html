@@ -190,7 +190,7 @@
                 data: formData,
                 success: function (data) {
                     
-                    if(data.code==1) {
+                    if(data.code==200) {
                         var filedata  = createObjectURL(file);
                         var imgObject = new Image();
                         imgObject.src = filedata;
@@ -218,31 +218,31 @@
 
         function publishArticleSubmit(){
 
-            if($.trim($("input[name='article_title']").val()) ==''){
-
-                layer.msg('请填写标题', {time:500, icon:2});
-
-                return false;
-            }
-
-            if(!$(".chosen-select").val()){
-
-                layer.msg('请选择所属分类', {time:500, icon:2});
-
-                return false;
-            }
-
-            if($.trim($(".summernote").summernote('code')) ==''){
-
-                layer.msg('请填写内容', {time:500, icon:2});
-
-                return false;
-            }
+            // if($.trim($("input[name='article_title']").val()) ==''){
+            //
+            //     layer.msg('请填写标题', {time:500, icon:2});
+            //
+            //     return false;
+            // }
+            //
+            // if(!$(".chosen-select").val()){
+            //
+            //     layer.msg('请选择所属分类', {time:500, icon:2});
+            //
+            //     return false;
+            // }
+            //
+            // if($.trim($(".summernote").summernote('code')) ==''){
+            //
+            //     layer.msg('请填写内容', {time:500, icon:2});
+            //
+            //     return false;
+            // }
             
             var formData = new FormData(document.getElementById('article_form'));
             formData.append('article_content',$(".summernote").summernote('code'));
-            formData.append('article_category',$(".chosen-select").val().join(','));
-            
+             formData.append('article_category',$(".chosen-select").val());
+
             var url = '';
             if($("#handle_type").val()=='add') {
 

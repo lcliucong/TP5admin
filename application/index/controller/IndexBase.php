@@ -10,23 +10,27 @@ use think\Controller;
 
 class IndexBase extends Controller
 {
-   
+
     public function __construct()
     {
        parent::__construct();
        
        // do something...
 
-       // echo "this is a index base controller";
 
     }
-    
+
     /**
      * 初始化操作
      */
     public function _initialize()
     {
-        
+        header('Access-Control-Allow-Origin: * ');
+        header('Access-Control-Allow-Methods:POST,GET,OPTIONS,DELETE,PUT'); // 允许请求的类型
+        header('Access-Control-Allow-Credentials: true');
+        header('Access-Control-Allow-Headers:x-requested-with,Content-Type,X-CSRF-Token');
+        header('Access-Control-Allow-Headers: *');
+
         error_reporting(E_ALL ^ E_NOTICE); // 屏蔽模板输出不存在的变量时的错误提示信息
         
         $category   =  $this->getArticleCategory(); // 调用子类的方法

@@ -72,21 +72,31 @@
                     <div class="form-group">
                         <label class="col-sm-1 control-label">新闻图片：</label>
                         <div class="col-sm-2">
-                            <input type="file" id="article_poster" name="file"  value="" class="form-control input-file" onchange="getImgData(this);">
+                            <input type="file" id="news_img" name="file"  value="" class="form-control input-file" onchange="getImgData(this);">
                             <input type="hidden" id="hide_news_img" name="news_img"  value="{$data['news_img'] | default=''}" class="form-control input-file">
 
                         </div>
                     </div>
-                     <div class="form-group">
-                            <label class="col-sm-1 control-label">预览图片</label>
-                            <div class="" id="temp_picture_wrap" style="position:relative;">
-                                <if condition="$data['news_img']">
-                                   <img src="{$data['news_img']}" id="temp_picture" width="240" height="250" style="margin-top:15px;" />
+<!--                     <div class="form-group">-->
+<!--                            <label class="col-sm-1 control-label">预览图片</label>-->
+<!--                            <div class="" id="temp_picture_wrap" style="position:relative;">-->
+<!--                                <if condition="$data['news_img']">-->
+<!--                                   <img src="{$data['news_img']}" id="temp_picture" width="240" height="250" style="margin-top:15px;" />-->
 
-                                    <a class='del_temp_picture' style='position:absolute;bottom:0px;margin-left:10px;'>删除</a>
-                                </if>
-                            </div>
+<!--                                    <a class='del_temp_picture' style='position:absolute;bottom:0px;margin-left:10px;'>删除</a>-->
+<!--                                </if>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">预览图片</label>
+                        <div class="" id="temp_picture_wrap" style="position:relative;">
+                            <if condition="$data['news_img']">
+                                <img src="{$data['news_img']}" id="temp_picture" width="240" height="250" style="margin-top:15px;" />
+
+                                <a class='del_temp_picture' style='position:absolute;bottom:0px;margin-left:10px;'>删除</a>
+                            </if>
                         </div>
+                    </div>
                     <div class="hr-line-dashed" style="border:0.5px dashed #bfbaba;"></div>
                 </div>
             </div>
@@ -180,44 +190,92 @@
 
             var file =  obj.files[0];
             var formData = new FormData();
-            var hide_newsid = $('#hide_news_id').val()
+
             var createObjectURL = function(blob){
+
                 return window[window.webkitURL ? 'webkitURL' : 'URL']['createObjectURL'](blob);
             };
 
             formData.append('file',file);
-            formData.append('id',hide_newsid)
+
             $.ajax({
-                url: "{:url('admin/NewsDt/getimg')}?isupload=1&id=hide_newsid",
+                url: "{:url('admin/Upload/checkUploadFileInfo')}?isupload=1",
                 type: 'post',
-                processData: false,  // 异步传输 formData 时要加上  processData: false  contentType: false 
+                processData: false,  // 异步传输 formData 时要加上  processData: false  contentType: false
                 contentType: false,  // 否则会报 Illegal invocation 非法调用错误
                 data: formData,
-                success: function (res) {
-                    if(res.code===200) {
-                        // var filedata  = createObjectURL(file);
-                        // console.log(filedata)
+                success: function (data) {
+
+                    if(data.code===200) {
+                        layer.msg(data.message, {time:1000, icon:6});
+                        var filedata  = createObjectURL(file);
                         var imgObject = new Image();
-                        imgObject.src = res.data;
+                        imgObject.src = filedata;
                         imgObject.id  = 'temp_picture';
                         imgObject.width   = '240';
                         imgObject.height  = '250';
                         imgObject.style.marginTop  = '15px';
-                        $("#news_img").src=res.data;
+
                         $('#temp_picture_wrap').html('').append(imgObject);
-                        $('#temp_picture_wrap').append("<a class='del_temp_picture' style='position:absolute;bottom:0px;margin-left:10px;'>删除</a>"); 
+                        $('#temp_picture_wrap').append("<a class='del_temp_picture' style='position:absolute;bottom:0px;margin-left:10px;'>删除</a>");
 
                     }else{
-                        $("#article_poster").val('');
+
+                        $("#news_img").val('');
                         $("#temp_picture_wrap").empty();
-                        layer.msg(res.msg, {time:800, icon:2});
+                        layer.msg(data.msg, {time:800, icon:5});
                     }
-                   
+
                 },
                 dataType:'json'
             });
-           
+
         }
+
+        /**  老版本图片上传
+        // function getImgData(obj){
+        //
+        //     var file =  obj.files[0];
+        //     var formData = new FormData();
+        //     var hide_newsid = $('#hide_news_id').val()
+        //     var createObjectURL = function(blob){
+        //         return window[window.webkitURL ? 'webkitURL' : 'URL']['createObjectURL'](blob);
+        //     };
+        //
+        //     formData.append('file',file);
+        //     formData.append('id',hide_newsid)
+        //     $.ajax({
+        //         url: "{:url('admin/NewsDt/getimg')}?isupload=1&id=hide_newsid",
+        //         type: 'post',
+        //         processData: false,  // 异步传输 formData 时要加上  processData: false  contentType: false
+        //         contentType: false,  // 否则会报 Illegal invocation 非法调用错误
+        //         data: formData,
+        //         success: function (res) {
+        //             if(res.code===200) {
+        //                 // var filedata  = createObjectURL(file);
+        //                 // console.log(filedata)
+        //                 var imgObject = new Image();
+        //                 imgObject.src = res.data;
+        //                 imgObject.id  = 'temp_picture';
+        //                 imgObject.width   = '240';
+        //                 imgObject.height  = '250';
+        //                 imgObject.style.marginTop  = '15px';
+        //                 $("#news_img").src=res.data;
+        //                 $('#temp_picture_wrap').html('').append(imgObject);
+        //                 $('#temp_picture_wrap').append("<a class='del_temp_picture' style='position:absolute;bottom:0px;margin-left:10px;'>删除</a>");
+        //
+        //             }else{
+        //                 $("#article_poster").val('');
+        //                 $("#temp_picture_wrap").empty();
+        //                 layer.msg(res.msg, {time:800, icon:2});
+        //             }
+        //
+        //         },
+        //         dataType:'json'
+        //     });
+        //
+        // }
+         **/
         
 
         function publishArticleSubmit(){

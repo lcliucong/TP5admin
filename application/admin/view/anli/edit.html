@@ -156,7 +156,7 @@
             data: formData,
             success: function (data) {
 
-                if(data.code==1) {
+                if(data.code==200) {
                     var filedata  = createObjectURL(file);
                     var imgObject = new Image();
                     imgObject.src = filedata;

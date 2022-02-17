@@ -43,6 +43,7 @@ class NewsDt extends AdminBase{
     }
     public function newsadd(Request $request){
         $data = $request->param();
+//        dump($data);die;
         $res = Loader::model("NewsDt")->addList($data);
         if ($res){
             return json(['code'=>200,'message'=>'添加成功!']);
@@ -52,7 +53,12 @@ class NewsDt extends AdminBase{
     }
     public function newsedit(){
         $data = request()->param();
-        unset($data['news_img']);
+        $file = request()->file('file');
+        $name = date("Ymd") . rand(1000, 9999);
+        if($file){
+            $info2 = $file->move('./uploads/NewsDt'.'/'.date("Ymd") . "/", $name);
+            $data['news_img'] = "/uploads/NewsDt".'/'.date("Ymd") . "/". $info2->getSaveName();
+        }
         $res = Loader::model('NewsDt')->editList($data);
         if ($res){
             return json(['code'=>200,'message'=>'修改成功!']);

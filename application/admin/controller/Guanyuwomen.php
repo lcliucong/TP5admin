@@ -20,6 +20,13 @@ class guanyuwomen extends Controller{
         elseif(request()->isPost()){
 
             $edit=input('post.');
+            $pic=request()->file('file');
+
+            if(!empty($pic)){
+                $uploadInfo = $pic->move(ROOT_PATH . 'public' . DS . 'uploads'. DS . 'guanyuwomen');
+                $edit['img']='/uploads/guanyuwomen/'.$uploadInfo->getSaveName();
+            }
+
 
             $res=db('guanyuwomen')->where('id',$id)->update($edit);
             if($res){

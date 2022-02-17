@@ -104,8 +104,9 @@
                 onImageUpload: function(files) {
                     var formData = new FormData();
                     formData.append('file',files[0]);
+
                     $.ajax({
-                        url : "{:url('admin/Upload/checkUploadFileInfo')}?isupload=2&folder=article",//后台文件上传接口
+                        url : "{:url('admin/Upload/checkUploadFileInfo')}?isupload=2&folder=guanyuwomen",//后台文件上传接口
                         type : 'post',
                         data : formData,
                         processData : false,
@@ -157,7 +158,7 @@
             data: formData,
             success: function (data) {
 
-                if(data.code==1) {
+                if(data.code==200) {
                     var filedata  = createObjectURL(file);
                     var imgObject = new Image();
                     imgObject.src = filedata;
@@ -220,6 +221,7 @@
         //
         //     url = "{:url('admin/Article/updateArticle')}";
         // }
+
 
         $.ajax({
             url:'{:url("admin/guanyuwomen/edit")}',

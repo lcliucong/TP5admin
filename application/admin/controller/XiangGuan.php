@@ -20,6 +20,12 @@ class xiangguan extends Controller{
         elseif(request()->isPost()){
 
             $edit=input('post.');
+            $pic=request()->file('file');
+
+            if(!empty($pic)){
+                $uploadInfo = $pic->move(ROOT_PATH . 'public' . DS . 'uploads'. DS . 'xiangguan');
+                $edit['img']='/uploads/xiangguan/'.$uploadInfo->getSaveName();
+            }
 
             $res=db('xiangguan')->where('id',$id)->update($edit);
             if($res){
